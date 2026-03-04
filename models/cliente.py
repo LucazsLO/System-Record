@@ -6,7 +6,7 @@ class Cliente:
         self.telefone = telefone
 
     def to_dict(self) -> dict:
-        return{
+        return {
             "id": self.id,
             "nome": self.nome,
             "email": self.email,
@@ -14,7 +14,7 @@ class Cliente:
         }
     
     @classmethod
-    def from_dict(cls, dados: dict):
+    def from_dict(cls, dados: dict) -> "Cliente":
         return cls(
             id=dados["id"],
             nome=dados["nome"],

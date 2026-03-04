@@ -8,28 +8,33 @@ from services.cliente_service import (
 
 def _input_campo(label: str, valor_atual: str = None) -> str:
     if valor_atual:
-        entrada = input (f"{label}[{valor_atual}]:").strip()
+        entrada = input(f"{label} [{valor_atual}]: ").strip()
         return entrada if entrada else valor_atual
-    return input(f"{label}:").strip()
+    return input(f"{label}: ").strip()
 
 def tela_adicionar():
     print("=== Adicionar Cliente ===")
     nome = _input_campo("Nome")
     email = _input_campo("Email")
-    telefone = _input_campo("Telefone")
-    cliente = adicionar_cliente(nome, email, telefone)
-    print(f"Cliente {cliente.nome} adicionado com ID {cliente.id}.")
+    telefone = _input_campo("Telefone") 
+    try:
+        cliente = adicionar_cliente(nome, email, telefone)
+        print(f"Cliente {cliente.nome} adicionado com ID {cliente.id}.")
+    except ValueError as e:
+        print(f"Erro ao cadastrar cliente: {e}")
+
+
 
 def tela_listar():
-    Clientes = listar_clientes()
-    if not Clientes:
+    clientes = listar_clientes()
+    if not clientes:
         print("Nenhum cliente encontrado.")
         return
     
     print("=== Lista de Clientes ===")
     print(f"\n{'ID':<5} {'Nome':<25} {'Email':<30} {'Telefone'}")
     print("-" * 70)
-    for c in Clientes:
+    for c in clientes:
         print(f"{c.id:<5} {c.nome:<25} {c.email:<30} {c.telefone}")
 
 def tela_buscar():
@@ -61,8 +66,11 @@ def tela_editar():
     email = _input_campo("Novo Email", atual.email)
     telefone = _input_campo("Novo Telefone", atual.telefone)
 
-    editar_cliente(id_busca, nome, email, telefone)
-    print("Cliente atualizado com sucesso!")
+    try:
+        editar_cliente(id_busca, nome, email, telefone)
+        print("Cliente atualizado com sucesso!")
+    except ValueError as e:
+        print(f"Erro ao atualizar cliente: {e}")
 
 
 def tela_remover():
