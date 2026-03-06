@@ -1,15 +1,16 @@
 from models.cliente import Cliente
 from utils.arquivo import ler_dados, salvar_dados
 from utils.validadores import validar_cliente
-def _proximo_id(clientes: list) -> int:
+
+def _proximo_id(clientes: list[Cliente]) -> int:
     if not clientes:
         return 1
     return max(c.id for c in clientes) + 1
 
-def _carregar() -> list:
+def _carregar() -> list[Cliente]:
     return [Cliente.from_dict(d) for d in ler_dados()]
 
-def _persistir(clientes: list) -> None:
+def _persistir(clientes: list[Cliente]) -> None:
     salvar_dados([c.to_dict() for c in clientes])
 
 def adicionar_cliente(nome: str, email: str, telefone: str) -> Cliente:
@@ -28,10 +29,10 @@ def adicionar_cliente(nome: str, email: str, telefone: str) -> Cliente:
     _persistir(clientes)
     return novo
 
-def listar_clientes() -> list:
+def listar_clientes() -> list[Cliente]:
     return _carregar()
 
-def buscar_por_nome(nome: str) -> list:
+def buscar_por_nome(nome: str) -> list[Cliente]:
     clientes = _carregar()
     return [c for c in clientes if nome.lower() in c.nome.lower()]
 

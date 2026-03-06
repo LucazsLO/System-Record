@@ -12,7 +12,7 @@ def _input_campo(label: str, valor_atual: str = None) -> str:
         return entrada if entrada else valor_atual
     return input(f"{label}: ").strip()
 
-def tela_adicionar():
+def tela_adicionar() -> None:
     print("=== Adicionar Cliente ===")
     nome = _input_campo("Nome")
     email = _input_campo("Email")
@@ -25,7 +25,7 @@ def tela_adicionar():
 
 
 
-def tela_listar():
+def tela_listar() -> None:
     clientes = listar_clientes()
     if not clientes:
         print("Nenhum cliente encontrado.")
@@ -37,7 +37,7 @@ def tela_listar():
     for c in clientes:
         print(f"{c.id:<5} {c.nome:<25} {c.email:<30} {c.telefone}")
 
-def tela_buscar():
+def tela_buscar() -> None:
     termo = input("Digite o nome para buscar: ").strip()
     resultados = buscar_por_nome(termo)
     if not resultados:
@@ -47,7 +47,7 @@ def tela_buscar():
         print(c)
 
 
-def tela_editar():
+def tela_editar() -> None:
     tela_listar()
     try:
         id_busca = int(input("\nDigite o ID do cliente a editar: "))
@@ -73,7 +73,7 @@ def tela_editar():
         print(f"Erro ao atualizar cliente: {e}")
 
 
-def tela_remover():
+def tela_remover() -> None:
     tela_listar()
     try:
         id_busca = int(input("Digite o ID do cliente a remover: "))
@@ -92,7 +92,7 @@ def tela_remover():
     else:        
         print("Operação cancelada.")
 
-def exibir_menu():
+def exibir_menu() -> None:
     opcoes = {
         "1": ("Adicionar Cliente", tela_adicionar),
         "2": ("Listar Clientes", tela_listar),
