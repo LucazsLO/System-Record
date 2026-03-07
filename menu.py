@@ -6,11 +6,13 @@ from services.cliente_service import (
     remover_cliente
 )
 
+from utils.exceptions import ValidacaoClienteError, ClienteNaoEncontradoError
+
 def _input_campo(label: str, valor_atual: str = None) -> str:
     if valor_atual:
-        entrada = input(f"{label} [{valor_atual}]: ").strip()
+        entrada = input(f"  > {label} [{valor_atual}]: ").strip()
         return entrada if entrada else valor_atual
-    return input(f"{label}: ").strip()
+    return input(f"  > {label}: ").strip()
 
 def tela_adicionar() -> None:
     print("=== Adicionar Cliente ===")
@@ -20,10 +22,8 @@ def tela_adicionar() -> None:
     try:
         cliente = adicionar_cliente(nome, email, telefone)
         print(f"Cliente {cliente.nome} adicionado com ID {cliente.id}.")
-    except ValueError as e:
+    except ValidacaoClienteError as e:
         print(f"Erro ao cadastrar cliente: {e}")
-
-
 
 def tela_listar() -> None:
     clientes = listar_clientes()
@@ -38,7 +38,7 @@ def tela_listar() -> None:
         print(f"{c.id:<5} {c.nome:<25} {c.email:<30} {c.telefone}")
 
 def tela_buscar() -> None:
-    termo = input("Digite o nome para buscar: ").strip()
+    termo = input("\n  > Digite o nome para buscar: ").strip()
     resultados = buscar_por_nome(termo)
     if not resultados:
         print("Nenhum cliente encontrado com esse nome.")
@@ -46,13 +46,14 @@ def tela_buscar() -> None:
     for c in resultados:
         print(c)
 
-
 def tela_editar() -> None:
     tela_listar()
     try:
-        id_busca = int(input("\nDigite o ID do cliente a editar: "))
-    except ValueError:
-        print("ID inválido.")
+        id_busca = int(input("\n  > Digite o ID do cliente a editar: "))
+    except ValidacaoClienteError as e:
+        print(f"Erro de validação: {e}")
+    except ClienteNaoEncontradoError:
+        print("Erro: Nenhum cliente com esse ID foi encontrado no banco de dados.")
         return
 
     clientes = listar_clientes()
@@ -69,15 +70,17 @@ def tela_editar() -> None:
     try:
         editar_cliente(id_busca, nome, email, telefone)
         print("Cliente atualizado com sucesso!")
-    except ValueError as e:
+    except ValidacaoClienteError as e:
+        print(f"Erro ao atualizar cliente: {e}")
+    except ClienteNaoEncontradoError as e:
         print(f"Erro ao atualizar cliente: {e}")
 
 
 def tela_remover() -> None:
     tela_listar()
     try:
-        id_busca = int(input("Digite o ID do cliente a remover: "))
-    except ValueError:
+        id_busca = int(input("\n  > Digite o ID do cliente a remover: "))
+    except ValueError: 
         print("ID inválido.")
         return
     clientes = listar_clientes()
@@ -85,7 +88,7 @@ def tela_remover() -> None:
     if not atual:
         print("Cliente não encontrado.")
         return
-    confirma = input(f"Tem certeza que deseja remover {atual.nome}? (s/n): ")
+    confirma = input(f"\n  > Tem certeza que deseja remover {atual.nome}? (s/n): ")
     if confirma.lower() == "s":
         remover_cliente(id_busca)
         print("Cliente removido.")
@@ -107,7 +110,7 @@ def exibir_menu() -> None:
             print(f"{chave}. {descricao}")
         print("===========================")
 
-        escolha: str = input("Escolha uma opção: ").strip()
+        escolha: str = input("\n  > Escolha uma opção: ").strip()
 
         if escolha == "0":
             print("Até logo!")
